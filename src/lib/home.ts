@@ -1,5 +1,5 @@
 import { esc } from './esc';
-import { localize, text } from './data';
+import { localize, switchLangPath, text } from './data';
 import type { Lang } from './data';
 import { head } from './html';
 import { u } from './base';
@@ -93,7 +93,7 @@ export function homePage(opts: {
     <a href="${u(localize('/', lang))}" aria-current="page">${esc(t.nav.home)}</a>
     <a href="${u(localize('/posts/', lang))}">${esc(t.nav.posts)}</a>
     <a href="${u(localize('/about/', lang))}">${esc(t.nav.about)}</a>
-    <button class="lang-toggle" type="button" data-lang-switch="${other}" data-target="${esc(u(localize(path, other)))}" aria-label="${esc(t.langLabel)}">${esc(t.langShort)}</button>
+    <button class="lang-toggle" type="button" data-lang-switch="${other}" data-target="${esc(u(switchLangPath(path, other)))}" aria-label="${esc(t.langLabel)}">${esc(t.langShort)}</button>
   </nav>
 
   <main id="main" class="hero">

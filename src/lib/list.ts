@@ -83,18 +83,20 @@ export function postsPage(opts: {
   const items = slicePage(posts, current);
 
   const cards = items
-    .map(
-      (post) => `<article class="card glass">
-      <a class="card__link" href="${esc(u(localize(`/posts/${post.id}/`, lang)))}">
-        <h2 class="card__title">${esc(post.title)}</h2>
-        <p class="card__summary">${esc(post.summary || (lang === 'zh' ? '（暂无摘要）' : 'No summary yet.'))}</p>
-      </a>
+    .map((post) => {
+      const href = u(localize(`/posts/${post.id}/`, lang));
+      const summary = post.summary || (lang === 'zh' ? '（暂无摘要）' : 'No summary yet.');
+      return `<article class="card glass">
+      <h2 class="card__title">
+        <a class="card__link" href="${esc(href)}">${esc(post.title)}</a>
+      </h2>
+      <p class="card__summary">${esc(summary)}</p>
       <div class="meta card__meta">
         <time datetime="${esc(post.date.toISOString())}">${esc(fmt(post.date, lang))}</time>
-        <span class="card__more">${esc(t.readMore)} →</span>
+        <a class="card__more" href="${esc(href)}" aria-label="${esc(t.readMore)}: ${esc(post.title)}">${esc(t.readMore)} →</a>
       </div>
-    </article>`,
-    )
+    </article>`;
+    })
     .join('\n');
 
   const list =

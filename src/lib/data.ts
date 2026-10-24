@@ -139,6 +139,19 @@ export function localize(path: string, lang: Lang): string {
   return p === '/' ? '/en/' : `/en${p}`;
 }
 
+/** 去掉 /en 前缀，得到语言无关的逻辑路径 */
+export function stripLang(path: string): string {
+  const p = path.startsWith('/') ? path : `/${path}`;
+  if (p === '/en' || p === '/en/') return '/';
+  if (p.startsWith('/en/')) return p.slice(3);
+  return p;
+}
+
+/** 当前路径 → 另一种语言的对应路径（语言切换用） */
+export function switchLangPath(path: string, target: Lang): string {
+  return localize(stripLang(path), target);
+}
+
 export type Button = {
   key: string;
   href: string;

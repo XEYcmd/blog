@@ -1,5 +1,5 @@
 import { esc, STYLE_LINKS } from './esc';
-import { htmlLang, LANGS, localize, site, text } from './data';
+import { htmlLang, LANGS, localize, site, stripLang, switchLangPath, text } from './data';
 import type { Lang } from './data';
 import { u, SITE_URL } from './base';
 import { globalScript } from './scripts';
@@ -101,7 +101,7 @@ export function pageHeader(lang: Lang, path: string): string {
     <a class="brand" href="${u(localize('/', lang))}"><span class="brand__prompt" aria-hidden="true">&gt; </span>${esc(site.name)}</a>
     <nav class="site-nav" aria-label="${esc(t.navAria)}">
       ${links}
-      <button class="lang-toggle" type="button" data-lang-switch="${other}" data-target="${esc(u(localize(path, other)))}" aria-label="${esc(t.langLabel)}">${esc(t.langShort)}</button>
+      <button class="lang-toggle" type="button" data-lang-switch="${other}" data-target="${esc(u(switchLangPath(path, other)))}" aria-label="${esc(t.langLabel)}">${esc(t.langShort)}</button>
     </nav>
   </div>
 </header>
