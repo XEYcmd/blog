@@ -3,15 +3,32 @@ import { existsSync } from 'node:fs';
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
-// 两种部署形态，自动判断：
-//   1. 自定义根域名 https://xeycmd.ccwu.cc/  → public/CNAME 存在，base = ''
-//   2. GitHub Pages 项目页（demo）          → 没有 CNAME，base = '/xeycmd-blog-dsh'
-// 想从 demo 切到正式域名时，把 CNAME.custom-domain 复制回 public/CNAME 即可。
-const HAS_CNAME = existsSync(new URL('./public/CNAME', import.meta.url));
-const REPO_NAME = 'xeycmd-blog-dsh';
+/**
+ * 部署形态自动判断（不用手动改）：
+ *
+ *   1. 自定义域名：public/CNAME 存在
+ *      → base = ''，site = https://<CNAME 内容>
+ *      → 站点在域名根路径，例如 https://blog.xeycmd.ccwu.cc/
+ *
+ *   2. GitHub Pages 项目页（没配域名时）
+ *      → base = '/仓库名'，site = https://<用户名>.github.io/<仓库名>
+ *
+ * 想启用/停用自定义域名，只需要增删 public/CNAME 这一个文件。
+ */
+const CNAME_PATH = new URL('./public/CNAME', import.meta.url);
+const HAS_CNAME = existsSync(CNAME_PATH);
 
-const base = HAS_CNAME ? '' : `/${REPO_NAME}`;
-const origin = HAS_CNAME ? 'https://xeycmd.ccwu.cc' : 'https://xeycmd.github.io';
+const REPO_NAME = 'xeycmd-blog-dsh';
+const USER_NAME = 'XEYCMD';
+
+let domain = '';
+if (HAS_CNAME) {
+  const { readFileSync } = await import('node:fs');
+  domain = readFileSync(CNAME_PATH, 'utf8').trim();
+}
+
+const base = domain ? '' : `/${REPO_NAME}`;
+const origin = domain ? `https://${domain}` : `https://${USER_NAME.toLowerCase()}.github.io`;
 
 export default defineConfig({
   site: `${origin}${base}`,

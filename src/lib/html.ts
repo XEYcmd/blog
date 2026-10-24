@@ -16,12 +16,24 @@ export function head(opts: {
   path: string;
   lang: Lang;
   type?: 'website' | 'article';
+  /** 文章页：发布日期、标签、原文语言 */
+  article?: { published: Date; tags: string[]; lang: Lang };
+  /** 是否禁止索引（404、分页等） */
+  noindex?: boolean;
   extra?: string;
 }): string {
-  const { title, description, path, lang, type = 'website', extra = '' } = opts;
+  const { title, description, path, lang, type = 'website', article, noindex = false, extra = '' } = opts;
   const other: Lang = lang === 'zh' ? 'en' : 'zh';
   const otherPath = localize(path, other);
   const fullTitle = title.includes(site.name) ? title : `${title} · ${site.name}`;
+  const ogImage = abs(site.ogImage);
+
+  const articleMeta = article
+    ? `<meta property="article:published_time" content="${article.published.toISOString()}">
+<meta property="article:author" content="${esc(site.name)}">
+${article.tags.map((tag) => `<meta property="article:tag" content="${esc(tag)}">`).join('\n')}
+<meta property="og:locale:alternate" content="${article.lang === 'zh' ? 'en_US' : 'zh_CN'}">`
+    : '';
 
   return `<!doctype html>
 <html lang="${htmlLang(lang)}">
@@ -30,17 +42,33 @@ export function head(opts: {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(fullTitle)}</title>
 <meta name="description" content="${esc(description)}">
+${noindex ? '<meta name="robots" content="noindex, follow">' : '<meta name="robots" content="index, follow">'}
 <link rel="canonical" href="${esc(abs(path))}">
+<link rel="alternate" hreflang="${htmlLang(lang)}" href="${esc(abs(path))}">
 <link rel="alternate" hreflang="${htmlLang(other)}" href="${esc(abs(otherPath))}">
+<link rel="alternate" hreflang="x-default" href="${esc(abs(localize(path, 'zh')))}">
 <meta name="theme-color" content="#120e24">
+<meta name="author" content="${esc(site.name)}">
+
 <meta property="og:type" content="${type}">
 <meta property="og:title" content="${esc(fullTitle)}">
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:url" content="${esc(abs(path))}">
 <meta property="og:site_name" content="${esc(site.name)}">
 <meta property="og:locale" content="${lang === 'zh' ? 'zh_CN' : 'en_US'}">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="${esc(ogImage)}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="${esc(fullTitle)}">
+${articleMeta}
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${esc(fullTitle)}">
+<meta name="twitter:description" content="${esc(description)}">
+<meta name="twitter:image" content="${esc(ogImage)}">
+
 <link rel="icon" href="${u('/favicon.svg')}" type="image/svg+xml">
+<link rel="apple-touch-icon" href="${u('/favicon.svg')}">
 <link rel="sitemap" href="${u('/sitemap-index.xml')}">
 <link rel="alternate" type="application/rss+xml" title="${esc(site.name)} Posts" href="${u('/rss.xml')}">
 ${STYLE_LINKS}
@@ -111,9 +139,12 @@ export function pageShell(opts: {
   title: string;
   description: string;
   content: string;
+  type?: 'website' | 'article';
+  article?: { published: Date; tags: string[]; lang: Lang };
+  noindex?: boolean;
 }): string {
-  const { lang, path, title, description, content } = opts;
-  return `${head({ title, description, path, lang })}
+  const { lang, path, title, description, content, type, article, noindex } = opts;
+  return `${head({ title, description, path, lang, type, article, noindex })}
 <body class="inner">
 ${pageHeader(lang, path)}
 ${content}

@@ -2,6 +2,7 @@ import { esc } from './esc';
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { scanBackgrounds } from './backgrounds-scan';
+import { SITE_URL } from './base';
 
 export type Lang = 'zh' | 'en';
 
@@ -9,11 +10,15 @@ export const LANGS: Lang[] = ['zh', 'en'];
 
 export const htmlLang = (lang: Lang) => (lang === 'zh' ? 'zh-CN' : 'en');
 
+/** 站点信息：url 跟随实际部署域名（自定义域 / github.io）自动变化 */
 export const site = {
-  url: 'https://xeycmd.ccwu.cc',
+  url: SITE_URL,
   name: 'XEYcmd',
   email: 'hello@xeycmd.ccwu.cc',
   github: 'https://github.com/XEYcmd',
+  repo: 'https://github.com/XEYcmd/xeycmd-blog-dsh',
+  /** OG 分享图（相对站内路径） */
+  ogImage: '/og.png',
 };
 
 export const text = {

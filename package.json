@@ -8,6 +8,7 @@
     "start": "astro dev",
     "build": "astro build",
     "prebuild": "node scripts/sync-assets.mjs && node scripts/build-scripts.mjs",
+    "og": "python scripts/make-og.py",
     "font": "node scripts/build-display-font.mjs",
     "preview": "astro preview",
     "astro": "astro"

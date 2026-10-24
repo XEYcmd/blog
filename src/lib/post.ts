@@ -94,5 +94,7 @@ export function postPage(opts: {
     title: post.title,
     description: post.summary || `${post.title} · ${site.name}`,
     content,
+    type: 'article',
+    article: { published: post.date, tags: post.tags, lang: post.lang },
   });
 }
