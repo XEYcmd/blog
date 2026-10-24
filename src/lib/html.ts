@@ -2,6 +2,7 @@ import { esc, STYLE_LINKS } from './esc';
 import { htmlLang, LANGS, localize, site, text } from './data';
 import type { Lang } from './data';
 import { u, SITE_URL } from './base';
+import { globalScript } from './scripts';
 
 /** 逻辑路径 → 站点绝对 URL（含基路径） */
 export const abs = (path: string): string => new URL(u(path), SITE_URL).href;
@@ -99,6 +100,7 @@ document.querySelectorAll('[data-lang-switch]').forEach(function (btn) {
   });
 });
 </script>
+${globalScript()}
 </body>
 </html>`;
 }

@@ -222,106 +222,7 @@ function initPetals(canvas: HTMLCanvasElement) {
 }
 
 /* =========================================================
- * 4. 鼠标光点拖尾
- * ======================================================= */
-function initTrail(canvas: HTMLCanvasElement) {
-  if (reduceMotion.matches) return;
-  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
-  const ctx = canvas.getContext('2d');
-  if (!ctx) return;
-
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
-  let w = 0;
-  let h = 0;
-  const resize = () => {
-    w = canvas.clientWidth;
-    h = canvas.clientHeight;
-    canvas.width = Math.floor(w * dpr);
-    canvas.height = Math.floor(h * dpr);
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  };
-  resize();
-
-  type Spark = { x: number; y: number; vx: number; vy: number; life: number; max: number; hue: number; size: number };
-  const sparks: Spark[] = [];
-
-  window.addEventListener(
-    'pointermove',
-    (e) => {
-      const amount = 2 + Math.floor(Math.random() * 2);
-      for (let i = 0; i < amount; i++) {
-        const angle = Math.random() * Math.PI * 2;
-        const spd = 0.2 + Math.random() * 0.9;
-        sparks.push({
-          x: e.clientX,
-          y: e.clientY,
-          vx: Math.cos(angle) * spd,
-          vy: Math.sin(angle) * spd - 0.2,
-          life: 0,
-          max: 480 + Math.random() * 420,
-          hue: Math.random() < 0.5 ? 268 : 330,
-          size: 1.2 + Math.random() * 2.2,
-        });
-      }
-      if (sparks.length > 220) sparks.splice(0, sparks.length - 220);
-    },
-    { passive: true },
-  );
-
-  let raf = 0;
-  let last = performance.now();
-  const frame = (now: number) => {
-    const dt = now - last;
-    last = now;
-    ctx.clearRect(0, 0, w, h);
-    ctx.globalCompositeOperation = 'lighter';
-
-    for (let i = sparks.length - 1; i >= 0; i--) {
-      const p = sparks[i];
-      p.life += dt;
-      if (p.life >= p.max) {
-        sparks.splice(i, 1);
-        continue;
-      }
-      p.x += p.vx * (dt / 16);
-      p.y += p.vy * (dt / 16);
-      p.vy += 0.004 * (dt / 16);
-      const t = 1 - p.life / p.max;
-      ctx.globalAlpha = t * 0.85;
-      const r = p.size * (0.6 + t * 0.9) * 4;
-      const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, r);
-      g.addColorStop(0, `hsla(${p.hue}, 100%, 92%, 1)`);
-      g.addColorStop(0.35, `hsla(${p.hue}, 100%, 78%, 0.55)`);
-      g.addColorStop(1, `hsla(${p.hue}, 100%, 70%, 0)`);
-      ctx.fillStyle = g;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    ctx.globalAlpha = 1;
-    ctx.globalCompositeOperation = 'source-over';
-    raf = requestAnimationFrame(frame);
-  };
-  raf = requestAnimationFrame(frame);
-
-  let resizeTimer: number | undefined;
-  window.addEventListener('resize', () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = window.setTimeout(resize, 180);
-  });
-
-  document.addEventListener('visibilitychange', () => {
-    if (document.hidden) {
-      cancelAnimationFrame(raf);
-    } else {
-      last = performance.now();
-      raf = requestAnimationFrame(frame);
-    }
-  });
-}
-
-/* =========================================================
- * 5. 入场淡入
+ * 4. 入场淡入
  * ======================================================= */
 function initFade(root: HTMLElement) {
   const els = root.querySelectorAll<HTMLElement>('[data-fade]');
@@ -343,9 +244,7 @@ function boot() {
   preloadBackgrounds(root);
 
   const petals = root.querySelector<HTMLCanvasElement>('canvas.petals');
-  const trail = root.querySelector<HTMLCanvasElement>('canvas.trail');
   if (petals) initPetals(petals);
-  if (trail) initTrail(trail);
 }
 
 if (document.readyState === 'loading') {

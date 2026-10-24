@@ -19,6 +19,12 @@ export type HomeButton = {
   icon: string;
 };
 
+/** 首页下方的预览区：最近文章 + 简介摘要 */
+export type HomeTeaser = {
+  posts: { id: string; title: string; summary: string; dateText: string; href: string }[];
+  about: { tagline: string; lines: string[]; href: string };
+};
+
 function pageHead(opts: Parameters<typeof head>[0]): string {
   return head(opts);
 }
@@ -29,9 +35,11 @@ export function homePage(opts: {
   backgrounds: string[];
   buttons: HomeButton[];
   typing: string[];
+  teaser: HomeTeaser;
   script?: string;
+  globalScript?: string;
 }): string {
-  const { lang, path, backgrounds, buttons, typing, script = '' } = opts;
+  const { lang, path, backgrounds, buttons, typing, teaser, script = '', globalScript = '' } = opts;
   const t = text[lang];
   const other: Lang = lang === 'zh' ? 'en' : 'zh';
   const rotateMs = backgrounds.length > 1 ? 8000 : 0;
@@ -58,6 +66,16 @@ export function homePage(opts: {
     })
     .join('\n    ');
 
+  const postCards = teaser.posts
+    .map(
+      (post) => `<a class="teaser-card glass" href="${esc(post.href)}">
+        <h3>${esc(post.title)}</h3>
+        <p>${esc(post.summary)}</p>
+        <time datetime="${esc(post.dateText)}">${esc(post.dateText)}</time>
+      </a>`,
+    )
+    .join('\n      ');
+
   const firstLine = typing[0] ?? '';
 
   return `${pageHead({ title: t.title, description: t.desc, path, lang })}
@@ -69,7 +87,6 @@ export function homePage(opts: {
     <div class="bg__shade"></div>
     <div class="bg__vignette"></div>
   </div>
-  <canvas class="trail" aria-hidden="true"></canvas>
   <canvas class="petals" aria-hidden="true"></canvas>
 
   <nav class="home-nav" aria-label="${esc(t.navAria)}">
@@ -88,12 +105,37 @@ export function homePage(opts: {
     <nav class="hero__actions" aria-label="${esc(t.quickNav)}">
       ${btnHtml}
     </nav>
-    <a class="scroll-hint" href="${u(localize('/posts/', lang))}" data-fade data-fade-delay="2000" aria-hidden="true" tabindex="-1">
+    <a class="scroll-hint" href="#more" data-fade data-fade-delay="2000">
       <span>${esc(t.scroll)}</span>
       <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg>
     </a>
   </main>
 </div>
+
+<section id="more" class="home-more">
+  <div class="container home-more__inner">
+    <header class="home-more__head">
+      <h2>${esc(t.postsTitle)}</h2>
+      <a class="home-more__all" href="${u(localize('/posts/', lang))}">${esc(t.viewAllPosts)} →</a>
+    </header>
+    <div class="teaser-grid">
+      ${postCards || `<p class="teaser-empty">${esc(t.postsEmpty)}</p>`}
+    </div>
+
+    <section class="home-about glass">
+      <div>
+        <p class="home-about__tagline">${esc(teaser.about.tagline)}</p>
+        ${teaser.about.lines.map((line) => `<p>${esc(line)}</p>`).join('')}
+      </div>
+      <a class="home-about__link" href="${esc(teaser.about.href)}">${esc(t.viewAbout)} →</a>
+    </section>
+
+    <footer class="home-footer">
+      <p>© ${new Date().getFullYear()} ${esc(t.footerName)} · ${esc(t.footer)}</p>
+    </footer>
+  </div>
+</section>
+
 <script>
 document.querySelectorAll('[data-lang-switch]').forEach(function (btn) {
   btn.addEventListener('click', function () {
@@ -104,6 +146,7 @@ document.querySelectorAll('[data-lang-switch]').forEach(function (btn) {
   });
 });
 </script>
+${globalScript}
 ${script}
 </body>
 </html>`;
