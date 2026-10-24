@@ -1,0 +1,9 @@
+---
+import Doc from '../../components/Doc.astro';
+import { aboutPage } from '../../lib/about';
+import { loadPosts } from '../../lib/data';
+
+const html = aboutPage({ lang: 'en', path: '/en/about/', postCount: loadPosts().length });
+---
+
+<Doc html={html} />

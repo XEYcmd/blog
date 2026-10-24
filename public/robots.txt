@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://xeycmd.ccwu.cc/sitemap-index.xml

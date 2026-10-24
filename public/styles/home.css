@@ -1,0 +1,432 @@
+/* 首页专用样式（从首页模板抽出来，供所有页面共用） */
+
+body.home {
+  margin: 0;
+  overflow-x: hidden;
+  background: #120e24;
+}
+
+.home__stage {
+  position: relative;
+  min-height: 100svh;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+/* ---------- 背景轮换 ---------- */
+.bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--bg-fallback);
+}
+
+.bg__layer {
+  position: absolute;
+  inset: -6%;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  opacity: 0;
+  will-change: opacity, transform;
+}
+
+/* 有图片时：纯 CSS 交叉淡入淡出（每张停留一段，叠化时两张同时可见）+ Ken Burns 推拉，
+   不依赖 JS，首屏就是第一张图。 */
+.bg--has-images .bg__layer {
+  background-image: var(--bg-url);
+  animation:
+    bg-show var(--duration) ease-in-out var(--delay) infinite both,
+    kenburns calc(var(--duration) * 2) ease-in-out infinite alternate;
+}
+
+@keyframes bg-show {
+  0% {
+    opacity: 0;
+  }
+  3% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 1;
+  }
+  58%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes kenburns {
+  from {
+    transform: scale(1.04) translate3d(0, 0, 0);
+  }
+  to {
+    transform: scale(1.14) translate3d(-1.2%, -1.6%, 0);
+  }
+}
+
+.bg__shade {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 45%, rgba(10, 8, 24, 0.15) 0%, rgba(10, 8, 24, 0.5) 70%),
+    linear-gradient(to top, rgba(10, 8, 24, 0.72), rgba(10, 8, 24, 0.28) 45%, rgba(10, 8, 24, 0.42));
+}
+
+.bg__vignette {
+  position: absolute;
+  inset: 0;
+  box-shadow: inset 0 0 28vw 8vw rgba(6, 4, 16, 0.55);
+  pointer-events: none;
+}
+
+/* ---------- 画布 ---------- */
+.petals,
+.trail {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.petals {
+  z-index: 0;
+}
+
+.trail {
+  z-index: 2;
+  mix-blend-mode: screen;
+}
+
+/* ---------- 主体 ---------- */
+.hero {
+  position: relative;
+  z-index: 1;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1rem, 2.2vh, 1.8rem);
+  padding: 4.5rem 1.25rem 5rem;
+  text-align: center;
+}
+
+.hero__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.9rem, 5.6vw, 4.2rem);
+  line-height: 1.25;
+  letter-spacing: 0.02em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  min-height: 1.3em;
+  padding: 0.12em 0.2em;
+}
+
+.hero__text {
+  color: #fff;
+  text-shadow:
+    0 0 1px rgba(255, 255, 255, 0.9),
+    0 0 18px rgba(185, 164, 255, 0.55),
+    0 0 42px rgba(255, 159, 210, 0.42),
+    0 6px 30px rgba(10, 8, 30, 0.6);
+}
+
+.hero__caret {
+  display: inline-block;
+  width: 0.1em;
+  height: 1.05em;
+  margin-left: 0.08em;
+  border-radius: 2px;
+  background: linear-gradient(to bottom, var(--c-accent-3), var(--c-accent-2));
+  box-shadow: 0 0 14px rgba(185, 164, 255, 0.85);
+  animation: blink 1.05s steps(1, end) infinite;
+}
+
+@keyframes blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0.12;
+  }
+}
+
+.hero__sub {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: clamp(0.78rem, 1.4vw, 0.95rem);
+  letter-spacing: 0.16em;
+  color: rgba(247, 244, 255, 0.82);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.6);
+}
+
+/* ---------- 毛玻璃按钮 ---------- */
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.9rem;
+  margin-top: 0.4rem;
+}
+
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 3rem;
+  padding: 0.7rem 1.5rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
+  backdrop-filter: blur(16px) saturate(150%);
+  color: var(--c-text);
+  font-family: var(--font-body);
+  font-size: 0.98rem;
+  text-decoration: none;
+  box-shadow:
+    0 10px 30px -12px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  transition:
+    transform 0.35s var(--ease-out),
+    background-color 0.3s,
+    border-color 0.3s,
+    box-shadow 0.35s;
+  will-change: transform;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(120deg, transparent 20%, rgba(255, 255, 255, 0.35) 48%, transparent 70%);
+  opacity: 0;
+  transform: translateX(-40%);
+  transition:
+    opacity 0.4s,
+    transform 0.7s var(--ease-out);
+  pointer-events: none;
+}
+
+.btn:hover,
+.btn:focus-visible {
+  text-decoration: none;
+  background: var(--glass-bg-hover);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-3px);
+  box-shadow:
+    0 18px 40px -14px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(185, 164, 255, 0.35),
+    0 0 26px rgba(185, 164, 255, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+
+.btn:hover::before,
+.btn:focus-visible::before {
+  opacity: 1;
+  transform: translateX(40%);
+}
+
+.btn__icon {
+  display: inline-flex;
+  color: var(--c-accent);
+  transition:
+    color 0.3s,
+    transform 0.35s var(--ease-out);
+}
+
+.btn:hover .btn__icon {
+  color: var(--c-accent-2);
+  transform: rotate(-8deg) scale(1.08);
+}
+
+/* 日式 kana 小提示 */
+.btn__kana {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 0.6rem);
+  transform: translate(-50%, 6px);
+  padding: 0.25rem 0.7rem;
+  border-radius: 10px;
+  background: rgba(24, 18, 48, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  color: #fff;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.28s,
+    transform 0.35s var(--ease-out);
+}
+
+.btn__kana::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  width: 8px;
+  height: 8px;
+  margin-left: -4px;
+  margin-top: -4px;
+  background: rgba(24, 18, 48, 0.78);
+  border-right: 1px solid rgba(255, 255, 255, 0.22);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+  transform: rotate(45deg);
+}
+
+.btn:hover .btn__kana,
+.btn:focus-visible .btn__kana {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* ---------- 首页右上角导航 ---------- */
+.home-nav {
+  position: absolute;
+  top: 1.1rem;
+  right: 1.25rem;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.3rem 0.4rem;
+  border-radius: 999px;
+  background: rgba(18, 14, 36, 0.32);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+.home-nav a {
+  color: rgba(247, 244, 255, 0.78);
+  font-size: 0.85rem;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  text-decoration: none;
+  transition:
+    color 0.2s,
+    background-color 0.2s;
+}
+
+.home-nav a:hover,
+.home-nav a[aria-current='page'] {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.home-nav .lang-toggle {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  background: transparent;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+  padding: 0.22rem 0.6rem;
+  cursor: pointer;
+}
+
+/* ---------- 滚动提示 ---------- */
+.scroll-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 1.6rem;
+  transform: translateX(-50%);
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  color: rgba(247, 244, 255, 0.6);
+  text-decoration: none;
+  transition:
+    opacity 0.6s,
+    color 0.3s;
+}
+
+.scroll-hint svg {
+  animation: bob 1.8s ease-in-out infinite;
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translateY(5px);
+    opacity: 1;
+  }
+}
+
+/* ---------- 入场淡入 ---------- */
+[data-fade] {
+  opacity: 0;
+  transform: translateY(14px);
+}
+
+[data-fade].is-in {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.9s var(--ease-out),
+    transform 0.9s var(--ease-out);
+}
+
+/* ---------- 移动端 ---------- */
+@media (max-width: 640px) {
+  .hero__actions {
+    flex-direction: column;
+    width: min(20rem, 86vw);
+  }
+
+  .btn {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .scroll-hint {
+    display: none;
+  }
+
+  .home-nav {
+    top: 0.7rem;
+    right: 0.7rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* 只保留第一张图，不做轮换和推拉 */
+  .bg--has-images .bg__layer {
+    animation: none;
+  }
+
+  .bg--has-images .bg__layer:first-child {
+    opacity: 1;
+  }
+
+  [data-fade] {
+    opacity: 1;
+    transform: none;
+  }
+
+  .scroll-hint svg {
+    animation: none;
+  }
+}

@@ -1,0 +1,8 @@
+---
+import Doc from '../components/Doc.astro';
+import { notFoundPage } from '../lib/about';
+
+const html = notFoundPage({ lang: 'zh', path: '/404/' });
+---
+
+<Doc html={html} />

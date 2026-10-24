@@ -1,0 +1,9 @@
+---
+import Doc from '../../components/Doc.astro';
+import { renderHome } from '../../lib/home-index';
+import { homeScript } from '../../lib/scripts';
+
+const html = renderHome('en', homeScript());
+---
+
+<Doc html={html} />

@@ -1,0 +1,26 @@
+{
+  "name": "xeycmd-site",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "prebuild": "node scripts/sync-assets.mjs && node scripts/build-scripts.mjs",
+    "font": "node scripts/build-display-font.mjs",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/rss": "^4.0.19",
+    "@astrojs/sitemap": "^3.7.4",
+    "@fontsource/jetbrains-mono": "^5.3.0",
+    "@fontsource/zen-kaku-gothic-new": "^5.3.1",
+    "@fontsource/zen-maru-gothic": "^5.3.1"
+  },
+  "devDependencies": {
+    "astro": "^6.4.8",
+    "vite": "^8.3.4"
+  }
+}

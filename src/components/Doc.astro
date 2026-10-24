@@ -1,0 +1,26 @@
+---
+/**
+ * 把完整的 HTML 文档字符串拆成 head / body 交给 Astro 输出，
+ * 避免出现两层 <html> 包裹。
+ */
+interface Props {
+  html: string;
+}
+
+const { html } = Astro.props;
+
+const headMatch = html.match(/<head[^>]*>([\s\S]*?)<\/head>/i);
+const bodyMatch = html.match(/<body([^>]*)>([\s\S]*?)<\/body>/i);
+const langMatch = html.match(/<html[^>]*\slang="([^"]*)"/i);
+const classMatch = bodyMatch ? bodyMatch[1].match(/class="([^"]*)"/) : null;
+
+const headInner = headMatch ? headMatch[1] : '';
+const bodyInner = bodyMatch ? bodyMatch[2] : '';
+const lang = langMatch ? langMatch[1] : 'zh-CN';
+const bodyClass = classMatch ? classMatch[1] : '';
+---
+
+<html lang={lang}>
+  <head set:html={headInner} />
+  <body class={bodyClass} set:html={bodyInner} />
+</html>
