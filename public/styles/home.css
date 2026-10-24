@@ -543,23 +543,159 @@ body.home {
 
 /* ---------- 移动端 ---------- */
 @media (max-width: 640px) {
+  .home__stage {
+    /* 手机浏览器地址栏会收缩，用 dvh 避免首屏被裁 */
+    min-height: 100dvh;
+  }
+
+  .hero {
+    min-height: 100dvh;
+    padding: 5.2rem 1.1rem 4rem;
+    gap: 1rem;
+  }
+
+  .hero__title {
+    font-size: clamp(1.55rem, 8.2vw, 2.4rem);
+    line-height: 1.35;
+    padding: 0.1em 0.1em;
+  }
+
+  .hero__caret {
+    height: 1em;
+  }
+
+  .hero__sub {
+    font-size: 0.74rem;
+    letter-spacing: 0.12em;
+  }
+
   .hero__actions {
     flex-direction: column;
-    width: min(20rem, 86vw);
+    width: min(20rem, 88vw);
+    gap: 0.7rem;
   }
 
   .btn {
     justify-content: center;
     width: 100%;
+    min-height: 3.15rem;
+    font-size: 0.95rem;
+    /* 移动端没有 hover，kana 提示改成常驻在按钮右侧的淡色小字 */
+    padding-right: 3.2rem;
+  }
+
+  .btn__kana {
+    position: absolute;
+    right: 1.05rem;
+    left: auto;
+    top: 50%;
+    bottom: auto;
+    transform: translateY(-50%);
+    opacity: 0.42;
+    background: transparent;
+    border: none;
+    padding: 0;
+    font-size: 0.66rem;
+    letter-spacing: 0.08em;
+  }
+
+  .btn__kana::after {
+    display: none;
+  }
+
+  .btn:hover .btn__kana,
+  .btn:focus-visible .btn__kana {
+    transform: translateY(-50%);
+    opacity: 0.42;
+  }
+
+  .btn:hover {
+    transform: none;
   }
 
   .scroll-hint {
     display: none;
   }
 
+  /* 顶部导航：铺满宽度，按钮更大更好点 */
   .home-nav {
-    top: 0.7rem;
-    right: 0.7rem;
+    top: 0.6rem;
+    left: 0.6rem;
+    right: 0.6rem;
+    justify-content: center;
+    gap: 0.15rem;
+    padding: 0.3rem 0.35rem;
+    background: rgba(18, 14, 36, 0.55);
+  }
+
+  .home-nav a {
+    flex: 1;
+    text-align: center;
+    padding: 0.42rem 0.3rem;
+    font-size: 0.82rem;
+  }
+
+  .home-nav .lang-toggle {
+    padding: 0.4rem 0.55rem;
+    font-size: 0.75rem;
+  }
+
+  /* 下方内容区 */
+  .home-more__inner {
+    padding-block: 2.2rem 1.5rem;
+  }
+
+  .home-more__head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+    margin-bottom: 1.1rem;
+  }
+
+  .home-more__head h2 {
+    font-size: 1.4rem;
+  }
+
+  .teaser-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .teaser-card {
+    padding: 0.95rem 1.05rem;
+    border-radius: 14px;
+  }
+
+  .teaser-card h3 {
+    font-size: 1rem;
+  }
+
+  .home-about {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.9rem;
+    margin-top: 1.4rem;
+    padding: 1.1rem 1.15rem;
+  }
+
+  .home-about__link {
+    align-self: flex-end;
+  }
+
+  .home-footer {
+    margin-top: 2rem;
+    font-size: 0.74rem;
+  }
+
+  /* 触摸设备去掉位移 */
+  .teaser-card:hover {
+    transform: none;
+  }
+}
+
+@media (hover: none) {
+  .btn:hover {
+    transform: none;
   }
 }
 

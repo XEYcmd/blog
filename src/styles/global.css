@@ -113,6 +113,12 @@ a:focus-visible {
   margin-inline: auto;
 }
 
+@media (max-width: 640px) {
+  .container {
+    width: min(1080px, 100% - 1.8rem);
+  }
+}
+
 /* ===== 顶栏 ===== */
 .site-header {
   position: sticky;

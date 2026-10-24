@@ -1,0 +1,20 @@
+---
+import Doc from '../../../../components/Doc.astro';
+import { postsPage, totalPages, pagePath } from '../../../../lib/list';
+import { loadPosts } from '../../../../lib/data';
+
+export function getStaticPaths() {
+  const posts = loadPosts();
+  const total = totalPages(posts.length);
+  const paths = [];
+  for (let page = 2; page <= total; page++) {
+    paths.push({ params: { page: String(page) }, props: { page } });
+  }
+  return paths;
+}
+
+const { page } = Astro.props;
+const html = postsPage({ lang: 'en', path: pagePath(page, 'en'), posts: loadPosts(), page });
+---
+
+<Doc html={html} />
