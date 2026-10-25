@@ -30,6 +30,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # 正式站（XEYCMD/blog）绑定自定义域名；其余仓库作为测试站，
+      # 构建成 GitHub Pages 项目页（<user>.github.io/<repo>/），
+      # 避免两个仓库争抢同一个域名。
+      - name: Drop custom domain for test deployments
+        if: github.repository != 'XEYCMD/blog'
+        run: rm -f public/CNAME
+
       - name: Build site
         run: npm run build
 
