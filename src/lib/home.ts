@@ -3,6 +3,7 @@ import { localize, switchLangPath, text } from './data';
 import type { Lang } from './data';
 import { head } from './html';
 import { u } from './base';
+import { musicPlayer, musicScript } from './player';
 
 const ICONS: Record<string, string> = {
   github: `<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 .5a12 12 0 0 0-3.79 23.4c.6.1.82-.26.82-.58v-2.03c-3.34.73-4.04-1.6-4.04-1.6-.55-1.4-1.34-1.77-1.34-1.77-1.09-.75.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.83 2.81 1.3 3.5 1 .1-.77.42-1.3.76-1.6-2.67-.3-5.47-1.34-5.47-5.95 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.11-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.3-1.55 3.3-1.23 3.3-1.23.65 1.66.24 2.88.12 3.18a4.65 4.65 0 0 1 1.23 3.22c0 4.62-2.8 5.65-5.48 5.95.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.83.58A12 12 0 0 0 12 .5Z"/></svg>`,
@@ -92,6 +93,7 @@ export function homePage(opts: {
   <nav class="home-nav" aria-label="${esc(t.navAria)}">
     <a href="${u(localize('/', lang))}" aria-current="page">${esc(t.nav.home)}</a>
     <a href="${u(localize('/posts/', lang))}">${esc(t.nav.posts)}</a>
+    <a href="${u(localize('/anime/', lang))}">${esc(t.navAnime)}</a>
     <a href="${u(localize('/about/', lang))}">${esc(t.nav.about)}</a>
     <button class="lang-toggle" type="button" data-lang-switch="${other}" data-target="${esc(u(switchLangPath(path, other)))}" aria-label="${esc(t.langLabel)}">${esc(t.langShort)}</button>
   </nav>
@@ -136,6 +138,7 @@ export function homePage(opts: {
   </div>
 </section>
 
+${musicPlayer(lang)}
 <script>
 document.querySelectorAll('[data-lang-switch]').forEach(function (btn) {
   btn.addEventListener('click', function () {
@@ -147,6 +150,7 @@ document.querySelectorAll('[data-lang-switch]').forEach(function (btn) {
 });
 </script>
 ${globalScript}
+${musicScript()}
 ${script}
 </body>
 </html>`;

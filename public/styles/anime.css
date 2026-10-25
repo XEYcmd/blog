@@ -1,0 +1,342 @@
+/* 番剧推荐页 */
+
+.anime {
+  flex: 1;
+  padding: clamp(2.2rem, 5vw, 3.6rem) 0 3rem;
+}
+
+.anime__head {
+  margin-bottom: 1.6rem;
+}
+
+.anime__head h1 {
+  margin: 0 0 0.45rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.85rem, 4vw, 2.5rem);
+  text-shadow: 0 0 24px rgba(185, 164, 255, 0.35);
+}
+
+.anime__head p {
+  margin: 0.2rem 0;
+  color: var(--c-text-dim);
+}
+
+/* ---------- 搜索 ---------- */
+.anime__toolbar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.anime__search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1 1 18rem;
+  min-width: 0;
+  padding: 0 0.9rem;
+  height: 2.9rem;
+  border-radius: 14px;
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  color: var(--c-text-dim);
+  transition:
+    border-color 0.25s,
+    background-color 0.25s;
+}
+
+.anime__search:focus-within {
+  border-color: rgba(185, 164, 255, 0.65);
+  background: var(--glass-bg-hover);
+}
+
+.anime__search svg {
+  flex: none;
+  opacity: 0.75;
+}
+
+.anime__search input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  color: var(--c-text);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  outline: none;
+}
+
+.anime__search input::placeholder {
+  color: rgba(247, 244, 255, 0.42);
+}
+
+/* 去掉 search 输入框自带的清除按钮样式差异 */
+.anime__search input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+}
+
+.anime__hint {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  color: var(--c-text-dim);
+  white-space: nowrap;
+}
+
+/* ---------- 标签筛选 ---------- */
+.anime__filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1.5rem;
+}
+
+.anime__chip {
+  padding: 0.32rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid var(--glass-border);
+  background: transparent;
+  color: var(--c-text-dim);
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition:
+    color 0.2s,
+    background-color 0.2s,
+    border-color 0.2s,
+    transform 0.2s var(--ease-out);
+}
+
+.anime__chip:hover {
+  color: var(--c-text);
+  background: var(--glass-bg);
+  transform: translateY(-1px);
+}
+
+.anime__chip.is-active {
+  color: #1a1430;
+  background: linear-gradient(135deg, var(--c-accent), var(--c-accent-2));
+  border-color: transparent;
+  font-weight: 700;
+}
+
+/* ---------- 列表 ---------- */
+.anime__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr));
+  gap: 0.5rem;
+}
+
+.anime__item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.035);
+  transition:
+    background-color 0.22s,
+    border-color 0.22s;
+}
+
+.anime__item:hover {
+  background: var(--glass-bg-hover);
+  border-color: var(--glass-border);
+}
+
+.anime__item[hidden] {
+  display: none;
+}
+
+.anime__index {
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: rgba(247, 244, 255, 0.3);
+  font-variant-numeric: tabular-nums;
+}
+
+.anime__main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.anime__name {
+  font-size: 0.95rem;
+  line-height: 1.4;
+  color: var(--c-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.anime__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.anime__tag {
+  font-size: 0.66rem;
+  line-height: 1.5;
+  padding: 0 0.4rem;
+  border-radius: 999px;
+  color: rgba(247, 244, 255, 0.55);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.anime__tag--more {
+  color: var(--c-accent-3);
+}
+
+/* ---------- 百科链接 ---------- */
+.anime__links {
+  flex: none;
+  display: flex;
+  gap: 0.3rem;
+}
+
+.anime__link {
+  display: grid;
+  place-items: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: 9px;
+  border: 1px solid var(--glass-border);
+  font-size: 0.76rem;
+  font-family: var(--font-body);
+  text-decoration: none;
+  color: var(--c-text-dim);
+  transition:
+    color 0.2s,
+    background-color 0.2s,
+    border-color 0.2s,
+    transform 0.2s var(--ease-out);
+}
+
+.anime__link:hover {
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+
+.anime__link--moe:hover {
+  color: #fff;
+  background: rgba(120, 190, 255, 0.22);
+  border-color: rgba(120, 190, 255, 0.5);
+}
+
+.anime__link--baike:hover {
+  color: #fff;
+  background: rgba(80, 140, 255, 0.22);
+  border-color: rgba(80, 140, 255, 0.5);
+}
+
+.anime__empty {
+  margin: 2rem 0;
+  text-align: center;
+  color: var(--c-text-dim);
+}
+
+.anime__note {
+  margin-top: 2rem;
+  font-size: 0.78rem;
+  color: rgba(247, 244, 255, 0.42);
+}
+
+.anime__note a {
+  color: rgba(247, 244, 255, 0.6);
+}
+
+/* ---------- 手机版 ---------- */
+@media (max-width: 640px) {
+  .anime {
+    padding: 1.6rem 0 2.2rem;
+  }
+
+  .anime__head h1 {
+    font-size: 1.65rem;
+  }
+
+  .anime__head p {
+    font-size: 0.88rem;
+  }
+
+  .anime__toolbar {
+    gap: 0.5rem;
+  }
+
+  .anime__search {
+    height: 2.75rem;
+    flex: 1 1 100%;
+  }
+
+  .anime__hint {
+    order: 2;
+    font-size: 0.72rem;
+  }
+
+  /* 标签横向滚动，避免占太多竖向空间 */
+  .anime__filters {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    margin-inline: -0.9rem;
+    padding: 0.1rem 0.9rem 0.4rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .anime__filters::-webkit-scrollbar {
+    display: none;
+  }
+
+  .anime__chip {
+    flex: none;
+    padding: 0.38rem 0.85rem;
+  }
+
+  .anime__list {
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+  }
+
+  .anime__item {
+    padding: 0.55rem 0.65rem;
+    gap: 0.6rem;
+  }
+
+  .anime__index {
+    display: none;
+  }
+
+  .anime__name {
+    font-size: 0.92rem;
+  }
+
+  /* 手机上点按区域更大 */
+  .anime__link {
+    width: 2.2rem;
+    height: 2.2rem;
+    font-size: 0.8rem;
+  }
+}
+
+@media (hover: none) {
+  .anime__chip:hover,
+  .anime__link:hover {
+    transform: none;
+  }
+}

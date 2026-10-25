@@ -19,7 +19,7 @@ export const FONT_LINKS = [
 
 export const STYLE_LINKS = [
   FONT_LINKS,
-  ...['display-font.css', 'global.css', 'home.css', 'inner.css'].map(
+  ...['display-font.css', 'global.css', 'home.css', 'inner.css', 'anime.css', 'player.css'].map(
     (f) => `<link rel="stylesheet" href="${u(`/styles/${f}`)}">`,
   ),
 ].join('\n');

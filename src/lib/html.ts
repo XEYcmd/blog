@@ -3,6 +3,7 @@ import { htmlLang, LANGS, localize, site, stripLang, switchLangPath, text } from
 import type { Lang } from './data';
 import { u, SITE_URL } from './base';
 import { globalScript } from './scripts';
+import { musicPlayer, musicScript } from './player';
 
 /** 逻辑路径 → 站点绝对 URL（含基路径） */
 export const abs = (path: string): string => new URL(u(path), SITE_URL).href;
@@ -83,6 +84,7 @@ export function pageHeader(lang: Lang, path: string): string {
   const items = [
     { href: localize('/', lang), label: t.nav.home, match: '/' },
     { href: localize('/posts/', lang), label: t.nav.posts, match: '/posts/' },
+    { href: localize('/anime/', lang), label: t.navAnime, match: '/anime/' },
     { href: localize('/about/', lang), label: t.nav.about, match: '/about/' },
   ];
   const other: Lang = lang === 'zh' ? 'en' : 'zh';
@@ -118,6 +120,7 @@ export function pageFooter(lang: Lang): string {
   </div>
 </footer>
 </div>
+${musicPlayer(lang)}
 <script>
 document.querySelectorAll('[data-lang-switch]').forEach(function (btn) {
   btn.addEventListener('click', function () {
@@ -128,6 +131,7 @@ document.querySelectorAll('[data-lang-switch]').forEach(function (btn) {
   });
 });
 </script>
+${musicScript()}
 ${globalScript()}
 </body>
 </html>`;

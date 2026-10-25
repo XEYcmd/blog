@@ -1,0 +1,8 @@
+---
+import Doc from '../../components/Doc.astro';
+import { animePage, animeScript } from '../../lib/anime';
+
+const html = animePage({ lang: 'en', path: '/en/anime/' }).replace('</body>', `${animeScript()}</body>`);
+---
+
+<Doc html={html} />
