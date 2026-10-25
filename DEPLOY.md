@@ -1,137 +1,98 @@
-# 部署到 GitHub Pages + 自定义域名
+# 部署说明
 
-仓库：<https://github.com/XEYcmd/xeycmd-blog-dsh>
-自定义域：`xeycmd.ccwu.cc`（DNS 在 Cloudflare，免费版）
-构建方式：GitHub Actions（`.github/workflows/deploy.yml` 已就位）
+## 两个仓库
 
-> 下面标注「🖱️ 网页端」的步骤需要你自己在浏览器里点，我这边只负责代码和文档。
+| 用途 | 仓库 | 线上地址 | 说明 |
+| --- | --- | --- | --- |
+| 正式站 | [XEYcmd/blog](https://github.com/XEYcmd/blog) | <https://blog.xeycmd.ccwu.cc/> | 绑定自定义域名 |
+| 测试站 | [xeycmd-blog-dsh](https://github.com/XEYcmd/xeycmd-blog-dsh) | <https://xeycmd.github.io/xeycmd-blog-dsh/> | 子路径部署，不绑域名 |
 
----
+同一份代码，两个仓库都能正确构建——不需要改任何配置。
 
-## 一、推代码（本地已可执行）
+## 工作流（重要）
+
+**所有改动先推到测试库，验证通过后再推正式库。**
 
 ```bash
-cd "D:\dsh的项目\个人网站"
-git init -b main
-git remote add origin git@github.com:XEYcmd/xeycmd-blog-dsh.git
+# 1. 改代码、本地构建
+npm run build
+
+# 2. 推到测试库
 git add -A
-git commit -m "init: XEYcmd 个人站"
-git push -u origin main
+git commit -m "feat: 描述"
+git push origin main
+
+# 3. 打开测试站验证
+#    https://xeycmd.github.io/xeycmd-blog-dsh/
+
+# 4. 确认没问题，再推正式库
+git push prod main
 ```
 
-仓库为空时可以直接推；如果远程已有内容，先 `git pull --rebase origin main` 再推。
+本地 remote：
 
----
+```
+origin  git@github.com:XEYcmd/xeycmd-blog-dsh.git   ← 测试库
+prod    git@github.com:XEYcmd/blog.git              ← 正式库
+```
 
-## 二、🖱️ 开启 GitHub Pages（Actions 方式）
+## 为什么两个仓库不用改配置
 
-1. 打开仓库 → **Settings** → 左侧 **Pages**
-2. **Build and deployment** 下的 **Source** 选 **GitHub Actions**
-3. 回到 **Actions** 标签页，应该能看到 `Deploy to GitHub Pages` 正在跑
-4. 等它变绿，先访问 `https://xeycmd.github.io/xeycmd-blog-dsh/` 确认站点正常
+`astro.config.mjs` 会读 Actions 注入的 `GITHUB_REPOSITORY`：
 
-> 注意：这一步先**不要**填 Custom domain，先把 `github.io` 跑通。
+```js
+const [owner, repo] = (process.env.GITHUB_REPOSITORY ?? 'XEYCMD/xeycmd-blog-dsh').split('/');
+const base = domain ? '' : `/${repo}`;
+const origin = domain ? `https://${domain}` : `https://${owner.toLowerCase()}.github.io`;
+```
 
----
+- 有 `public/CNAME` → 用 CNAME 里的域名，站点部署在根路径
+- 没有 CNAME → 用 `<用户名>.github.io/<仓库名>`，站点部署在子路径
 
-## 三、🖱️ 配置自定义域名
+`deploy.yml` 里还有一步，保证测试库不会去抢正式域名：
 
-1. 仓库 → **Settings** → **Pages** → **Custom domain**
-2. 填入 `xeycmd.ccwu.cc`，点 **Save**
-3. 等待 DNS 检查通过（前面配好 DNS 后一般几分钟）
+```yaml
+- name: Drop custom domain for test deployments
+  if: github.repository != 'XEYCMD/blog'
+  run: rm -f public/CNAME
+```
 
-> 本项目已经在 `public/CNAME` 里写好了 `xeycmd.ccwu.cc`，构建产物里会带着它。
+## 首次部署新仓库时要做的事
 
----
+1. 仓库 → **Settings** → **Pages**
+2. **Source** 选 **GitHub Actions**
+3. 等 Actions 变绿
+4. 正式库再填 **Custom domain**
 
-## 四、🖱️ Cloudflare DNS 记录
+## Cloudflare DNS（自定义域名）
 
-在 Cloudflare → 你的域名 `ccwu.cc` → **DNS** → **Records** 添加：
+`blog.xeycmd.ccwu.cc` 需要一条记录：
 
-### 根域名 `xeycmd.ccwu.cc`
-
-方式 A（推荐，Cloudflare 支持 CNAME 拉平）：
-
-| 类型 | 名称 | 内容 | 代理状态 |
+| 类型 | 名称 | 内容 | 代理 |
 | --- | --- | --- | --- |
-| CNAME | `xeycmd` | `xeycmd.github.io` | **仅 DNS（灰云）** |
+| CNAME | `blog` | `xeycmd.github.io` | **仅 DNS（灰云）** |
 
-方式 B（GitHub 官方推荐的 A 记录）：
+**代理必须关掉（灰云）**。橙云会让 GitHub 的域名验证和 HTTPS 证书签发失败。
 
-| 类型 | 名称 | 内容 | 代理状态 |
-| --- | --- | --- | --- |
-| A | `xeycmd` | `185.199.108.153` | 仅 DNS（灰云） |
-| A | `xeycmd` | `185.199.109.153` | 仅 DNS（灰云） |
-| A | `xeycmd` | `185.199.110.153` | 仅 DNS（灰云） |
-| A | `xeycmd` | `185.199.111.153` | 仅 DNS（灰云） |
+如果改用根域名，则要 4 条 A 记录（`185.199.108.153` ~ `185.199.111.153`），同样是灰云。
 
-可选 IPv6（AAAA）：
+## 换域名时
 
-```
-2606:50c0:8000::153
-2606:50c0:8001::153
-2606:50c0:8002::153
-2606:50c0:8003::153
-```
-
-### 重要：代理必须关掉（灰云）
-
-橙云（代理开启）会让 GitHub 的域名验证和 HTTPS 证书签发失败，表现为 Pages 页面一直报 “DNS check unsuccessful” 或证书错误。
-
-- 如果一定要用 Cloudflare 代理，必须额外把 SSL/TLS 模式设为 **Full**，并关闭 “Always Use HTTPS” 之外的自动 HTTPS 重写；即便如此 GitHub 的 `Enforce HTTPS` 也可能不可用。**第一次上线建议直接用灰云。**
-
-### 关于 `www`
-
-本项目用根域名，`www` 不是必需的。如果也想让 `www.xeycmd.ccwu.cc` 能访问：
-
-| 类型 | 名称 | 内容 |
-| --- | --- | --- |
-| CNAME | `www` | `xeycmd.github.io` |
-
-GitHub 会自动在两者之间做 301 跳转。
-
----
-
-## 五、🖱️ 验证
-
-```powershell
-# DNS 是否生效（应返回 GitHub Pages 的 IP 或 CNAME）
-Resolve-DnsName xeycmd.ccwu.cc
-
-# 站点是否可达
-curl.exe -I https://xeycmd.ccwu.cc/
-```
-
-- 浏览器打开 `https://xeycmd.ccwu.cc/`，应该能看到首页
-- 回到 **Settings → Pages**，勾选 **Enforce HTTPS**（证书签发通常需要几分钟到几十分钟）
-
----
-
-## 六、之后每次发布
-
-```bash
-git add -A
-git commit -m "post: 新文章标题"
-git push
-```
-
-推上去后 Actions 自动构建 + 发布，无需任何手动操作。具体写文章的格式见 [POSTING.md](./POSTING.md)。
-
----
+1. Cloudflare 改/加 CNAME 指向 `xeycmd.github.io`
+2. GitHub 正式库 → Settings → Pages → Custom domain 填新域名
+3. 改仓库里的 `public/CNAME` 内容为新域名，push
+4. 等验证通过后勾上 **Enforce HTTPS**
 
 ## 常见问题
 
-**页面 404，但 Actions 是绿的**
-检查 Settings → Pages → Source 是否为 `GitHub Actions`；再确认 `dist/index.html` 在产物里（`npm run build` 本地能生成）。
+**测试站 301 跳转到正式域名**
+测试库的 Pages 设置里还留着 Custom domain，去 Settings → Pages → Custom domain 点 Remove。
 
-**样式全丢、只有纯文字**
-多半是访问了 `https://xeycmd.github.io/xeycmd-blog-dsh/` 而站点是按根域名构建的（`astro.config.mjs` 里 `site` 是根域）。请用 `https://xeycmd.ccwu.cc/` 访问。
+**页面 404 但 Actions 是绿的**
+检查 Settings → Pages → Source 是否为 `GitHub Actions`。
 
-**自定义域名一直验证失败**
-99% 是 Cloudflare 橙云开着。改成灰云（DNS only），等 5–10 分钟再点 Save。
+**样式全丢只剩文字**
+访问了错误的地址。测试库必须带 `/xeycmd-blog-dsh/` 前缀，正式库用自定义域名根路径。
 
-**Enforce HTTPS 灰色不可点**
-证书还没签发完，通常等 15 分钟到几小时；期间可以先用 http 访问。
-
-**改了文章但线上没变**
-去 Actions 看最新的 workflow 是否成功；如果是缓存的缘故，强制刷新（Ctrl+F5）。
+**Enforce HTTPS 是灰的**
+证书还在签发，等几分钟到几小时。
