@@ -213,8 +213,9 @@
 .anime__link {
   display: grid;
   place-items: center;
-  width: 1.9rem;
+  min-width: 2.4rem;
   height: 1.9rem;
+  padding: 0 0.4rem;
   border-radius: 9px;
   border: 1px solid var(--glass-border);
   font-size: 0.76rem;
@@ -231,12 +232,6 @@
 .anime__link:hover {
   transform: translateY(-1px);
   text-decoration: none;
-}
-
-.anime__link--moe:hover {
-  color: #fff;
-  background: rgba(120, 190, 255, 0.22);
-  border-color: rgba(120, 190, 255, 0.5);
 }
 
 .anime__link--baike:hover {

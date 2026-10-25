@@ -17,16 +17,18 @@ const ICONS = {
   music: `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l10-2v13"/><circle cx="6.5" cy="18" r="3"/><circle cx="16.5" cy="16" r="3"/></svg>`,
 };
 
-/** 播放器 HTML + 样式挂点。列表为空时返回空字符串，不渲染任何东西。 */
+/** 播放器 HTML + 样式挂点。歌单为空时也渲染按钮，点击后提示去配置。 */
 export function musicPlayer(lang: Lang): string {
-  if (!tracks.length) return '';
   const t = text[lang];
+  const isEmpty = tracks.length === 0;
 
-  const listItems = tracks
-    .map((track, i) => {
-      const src = track.src.startsWith('/') ? u(track.src) : track.src;
-      const cover = track.cover ? (track.cover.startsWith('/') ? u(track.cover) : track.cover) : '';
-      return `<li class="mp__track" data-index="${i}" data-src="${esc(src)}" data-cover="${esc(cover)}">
+  const listItems = isEmpty
+    ? `<li class="mp__empty">${esc(t.playerEmpty)}</li>`
+    : tracks
+        .map((track, i) => {
+          const src = track.src.startsWith('/') ? u(track.src) : track.src;
+          const cover = track.cover ? (track.cover.startsWith('/') ? u(track.cover) : track.cover) : '';
+          return `<li class="mp__track" data-index="${i}" data-src="${esc(src)}" data-cover="${esc(cover)}">
         <button class="mp__track-btn" type="button">
           <span class="mp__track-no" aria-hidden="true">${i + 1}</span>
           <span class="mp__track-meta">
@@ -36,8 +38,8 @@ export function musicPlayer(lang: Lang): string {
           <span class="mp__track-state" aria-hidden="true"></span>
         </button>
       </li>`;
-    })
-    .join('');
+        })
+        .join('');
 
   return `<div class="mp" id="music-player" data-lang="${lang}">
   <audio id="mp-audio" preload="metadata"></audio>
@@ -91,11 +93,13 @@ export function musicPlayer(lang: Lang): string {
 
 /** 播放器脚本（内联，避免额外请求） */
 export function musicScript(): string {
-  if (!tracks.length) return '';
+  const hasTracks = tracks.length > 0;
   return `<script>
 (function () {
   var root = document.getElementById('music-player');
   if (!root) return;
+
+  var HAS_TRACKS = ${hasTracks ? 'true' : 'false'};
 
   var audio = document.getElementById('mp-audio');
   var toggle = document.getElementById('mp-toggle');
@@ -125,7 +129,6 @@ export function musicScript(): string {
   var ICON_MUSIC = ${JSON.stringify(ICONS.music)};
 
   var items = Array.prototype.slice.call(listEl.querySelectorAll('.mp__track'));
-  if (!items.length) return;
 
   var MODES = ['loop', 'one', 'shuffle'];
   var state = {
@@ -190,6 +193,7 @@ export function musicScript(): string {
   }
 
   function loadTrack(index, autoplay) {
+    if (!items.length) return;
     state.index = (index + items.length) % items.length;
     var li = items[state.index];
     audio.src = li.getAttribute('data-src');
@@ -224,6 +228,7 @@ export function musicScript(): string {
   }
 
   function play() {
+    if (!HAS_TRACKS || !items.length) return;
     if (!audio.src) loadTrack(state.index, false);
     var p = audio.play();
     if (p && p.catch) p.catch(function () {});

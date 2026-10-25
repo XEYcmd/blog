@@ -3,7 +3,7 @@ import { u } from './base';
 import { localize, text } from './data';
 import type { Lang } from './data';
 import { pageShell } from './html';
-import { animeList, animeTags, baikeUrl, moegirlUrl } from '../data/anime';
+import { animeList, animeTags, baikeUrl } from '../data/anime';
 
 /** 每行显示的标签数上限（避免卡片过高） */
 const MAX_TAGS = 3;
@@ -19,8 +19,7 @@ function renderItem(item: (typeof animeList)[number], index: number): string {
       <span class="anime__tags">${tags.map((t) => `<span class="anime__tag">${esc(t)}</span>`).join('')}${extra}</span>
     </div>
     <span class="anime__links">
-      <a class="anime__link anime__link--moe" href="${esc(moegirlUrl(item))}" target="_blank" rel="noopener noreferrer" title="萌娘百科" aria-label="${esc(item.name)} · 萌娘百科">萌</a>
-      <a class="anime__link anime__link--baike" href="${esc(baikeUrl(item))}" target="_blank" rel="noopener noreferrer" title="百度百科" aria-label="${esc(item.name)} · 百度百科">百</a>
+      <a class="anime__link anime__link--baike" href="${esc(baikeUrl(item))}" target="_blank" rel="noopener noreferrer" title="百度百科" aria-label="${esc(item.name)} · 百度百科">百科</a>
     </span>
   </li>`;
 }
@@ -61,8 +60,6 @@ export function animePage(opts: { lang: Lang; path: string }): string {
 
     <p class="anime__note">
       ${esc(t.animeNote)}
-      <a href="https://zh.moegirl.org.cn/" target="_blank" rel="noopener noreferrer">萌娘百科</a>
-      ·
       <a href="https://baike.baidu.com/" target="_blank" rel="noopener noreferrer">百度百科</a>
     </p>
   </section>`;

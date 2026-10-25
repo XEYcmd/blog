@@ -454,3 +454,13 @@
     animation: none;
   }
 }
+
+/* 歌单为空时的提示 */
+.mp__empty {
+  list-style: none;
+  padding: 0.9rem 0.7rem;
+  font-size: 0.78rem;
+  line-height: 1.6;
+  color: var(--c-text-dim);
+  text-align: center;
+}
