@@ -20,3 +20,7 @@ pnpm-debug.log*
 
 # 本地临时脚本
 scripts/_*.mjs
+# 生成过程中的临时数据
+content/_*.json
+content/_*.csv
+scripts/_*.json
