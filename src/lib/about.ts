@@ -21,7 +21,6 @@ export function aboutPage(opts: { lang: Lang; path: string; postCount: number })
 
   const links = [
     `<li><a href="${esc(site.github)}" rel="noopener noreferrer" target="_blank">GitHub</a></li>`,
-    `<li><a href="mailto:${esc(site.email)}">${esc(site.email)}</a></li>`,
     `<li><a href="${esc(u(localize('/posts/', lang)))}">${esc(t.nav.posts)}</a></li>`,
   ].join('');
 

@@ -14,7 +14,6 @@ export const htmlLang = (lang: Lang) => (lang === 'zh' ? 'zh-CN' : 'en');
 export const site = {
   url: SITE_URL,
   name: 'XEYcmd',
-  email: 'hello@xeycmd.ccwu.cc',
   github: 'https://github.com/XEYcmd',
   repo: 'https://github.com/XEYcmd/xeycmd-blog-dsh',
   /** OG 分享图（相对站内路径） */

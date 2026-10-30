@@ -1,8 +1,27 @@
 // 从作品库 JSON 生成 src/data/anime.ts
 // 用法：node scripts/build-anime.mjs
-import { readFileSync, writeFileSync } from 'node:fs';
+//       ANIME_SOURCE=/path/to/works.json node scripts/build-anime.mjs
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 
-const SRC = 'D:\\dsh的项目\\作品库-备份-20261024-2329.json';
+/**
+ * 作品库数据源，按优先级查找：
+ *   1. 环境变量 ANIME_SOURCE 指定的路径
+ *   2. content/anime-source.json（仓库内，已被 .gitignore 忽略）
+ * 找不到就报错退出，不会生成空数据。
+ */
+const CANDIDATES = [
+  process.env.ANIME_SOURCE,
+  'content/anime-source.json',
+].filter(Boolean);
+
+const SRC = CANDIDATES.find((p) => existsSync(p));
+if (!SRC) {
+  console.error('[anime] 找不到作品库数据源。');
+  console.error('  请把 JSON 放到 content/anime-source.json，');
+  console.error('  或用 ANIME_SOURCE=<路径> node scripts/build-anime.mjs 指定。');
+  process.exit(1);
+}
+
 const OUT = 'src/data/anime.ts';
 
 /**
