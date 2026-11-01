@@ -31,8 +31,8 @@ export function postPage(opts: {
 
   const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
   const tocHtml =
-    toc.length > 2
-      ? `<details class="toc glass" open>
+    toc.length > 3
+      ? `<details class="toc glass">
       <summary>${esc(t.toc)}</summary>
       <ol>${toc
         .map((h) => `<li class="depth-${h.depth}"><a href="#${esc(h.slug)}">${esc(h.text)}</a></li>`)

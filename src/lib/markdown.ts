@@ -63,6 +63,19 @@ export function renderMarkdown(source: string): { html: string; headings: Headin
   while (i < lines.length) {
     const line = lines[i];
 
+    // HTML 折叠块 <details>…</details>：原样保留（内部按 markdown 渲染）
+    if (/^\s*<details[\s>]/i.test(line)) {
+      const buf: string[] = [];
+      while (i < lines.length) {
+        buf.push(lines[i]);
+        const isClose = /^\s*<\/details>\s*$/i.test(lines[i]);
+        i++;
+        if (isClose) break;
+      }
+      out.push(buf.join('\n'));
+      continue;
+    }
+
     // 围栏代码块
     const fence = line.match(/^\s*```(\S*)\s*$/);
     if (fence) {
