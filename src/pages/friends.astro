@@ -1,8 +1,8 @@
 ---
 import Doc from '../components/Doc.astro';
-import { friendsPage } from '../lib/friends';
+import { friendsPage, friendsScript } from '../lib/friends';
 
-const html = friendsPage({ lang: 'zh', path: '/friends/' });
+const html = friendsPage({ lang: 'zh', path: '/friends/' }).replace('</body>', `${friendsScript('zh')}</body>`);
 ---
 
 <Doc html={html} />

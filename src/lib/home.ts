@@ -4,6 +4,7 @@ import type { Lang } from './data';
 import { head } from './html';
 import { u } from './base';
 import { musicPlayer, musicScript } from './player';
+import { friends } from '../data/friends';
 
 const ICONS: Record<string, string> = {
   github: `<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 .5a12 12 0 0 0-3.79 23.4c.6.1.82-.26.82-.58v-2.03c-3.34.73-4.04-1.6-4.04-1.6-.55-1.4-1.34-1.77-1.34-1.77-1.09-.75.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.83 2.81 1.3 3.5 1 .1-.77.42-1.3.76-1.6-2.67-.3-5.47-1.34-5.47-5.95 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.11-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.3-1.55 3.3-1.23 3.3-1.23.65 1.66.24 2.88.12 3.18a4.65 4.65 0 0 1 1.23 3.22c0 4.62-2.8 5.65-5.48 5.95.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.83.58A12 12 0 0 0 12 .5Z"/></svg>`,
@@ -77,6 +78,28 @@ export function homePage(opts: {
     )
     .join('\n      ');
 
+  // 首页侧栏：友链列表
+  const friendsAsideHtml = friends.length
+    ? `<aside class="home-friends" aria-label="${esc(t.friendsTitle)}">
+        <header class="home-friends__head">
+          <h2>${esc(t.friendsTitle)}</h2>
+          <a class="home-friends__more" href="${u(localize('/friends/', lang))}">${esc(t.friendsMore)} →</a>
+        </header>
+        <ul class="home-friends__list">
+          ${friends
+            .map(
+              (f) => `<li class="home-friends__item">
+            <a class="home-friends__link" href="${esc(f.url)}" target="_blank" rel="noopener noreferrer">
+              <span class="home-friends__name">${esc(f.name)}</span>
+              ${f.desc ? `<span class="home-friends__desc">${esc(f.desc)}</span>` : ''}
+            </a>
+          </li>`,
+            )
+            .join('\n          ')}
+        </ul>
+      </aside>`
+    : '';
+
   const firstLine = typing[0] ?? '';
 
   return `${pageHead({ title: t.title, description: t.desc, path, lang })}
@@ -116,21 +139,27 @@ export function homePage(opts: {
 
 <section id="more" class="home-more">
   <div class="container home-more__inner">
-    <header class="home-more__head">
-      <h2>${esc(t.postsTitle)}</h2>
-      <a class="home-more__all" href="${u(localize('/posts/', lang))}">${esc(t.viewAllPosts)} →</a>
-    </header>
-    <div class="teaser-grid">
-      ${postCards || `<p class="teaser-empty">${esc(t.postsEmpty)}</p>`}
-    </div>
+    <div class="home-more__layout">
+      <div class="home-more__main">
+        <header class="home-more__head">
+          <h2>${esc(t.postsTitle)}</h2>
+          <a class="home-more__all" href="${u(localize('/posts/', lang))}">${esc(t.viewAllPosts)} →</a>
+        </header>
+        <div class="teaser-grid">
+          ${postCards || `<p class="teaser-empty">${esc(t.postsEmpty)}</p>`}
+        </div>
 
-    <section class="home-about glass">
-      <div>
-        <p class="home-about__tagline">${esc(teaser.about.tagline)}</p>
-        ${teaser.about.lines.map((line) => `<p>${esc(line)}</p>`).join('')}
+        <section class="home-about glass">
+          <div>
+            <p class="home-about__tagline">${esc(teaser.about.tagline)}</p>
+            ${teaser.about.lines.map((line) => `<p>${esc(line)}</p>`).join('')}
+          </div>
+          <a class="home-about__link" href="${esc(teaser.about.href)}">${esc(t.viewAbout)} →</a>
+        </section>
       </div>
-      <a class="home-about__link" href="${esc(teaser.about.href)}">${esc(t.viewAbout)} →</a>
-    </section>
+
+      ${friendsAsideHtml}
+    </div>
 
     <footer class="home-footer">
       <p>© ${new Date().getFullYear()} ${esc(site.name)} | <a class="site-footer__links" href="${u(localize('/friends/', lang))}">${lang === 'zh' ? '友情链接' : 'Friends'}</a></p>

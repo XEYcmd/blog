@@ -11,6 +11,19 @@ export type Friend = {
 };
 
 export const friends: Friend[] = [
-  // 示例：
-  // { name: '某人的博客', url: 'https://example.com', desc: '写代码和生活的记录' },
+  {
+    name: 'AeriFoxの小窝',
+    url: 'https://symetro.net/',
+    desc: '这是AeriFoxの小窝，仍在开发！',
+  },
+  {
+    name: 'XXXUAN的小窝',
+    url: 'https://xxxuan-nxd.github.io/',
+    desc: 'XXXUAN的赛博小窝！',
+  },
+  {
+    name: 'TwinConnectMonai',
+    url: 'https://sbu.monai.ccwu.cc/',
+    desc: '一个好用的国模逆向',
+  },
 ];
