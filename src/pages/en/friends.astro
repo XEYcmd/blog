@@ -1,0 +1,8 @@
+---
+import Doc from '../../components/Doc.astro';
+import { friendsPage } from '../../lib/friends';
+
+const html = friendsPage({ lang: 'en', path: '/en/friends/' });
+---
+
+<Doc html={html} />

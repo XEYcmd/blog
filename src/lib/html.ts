@@ -112,11 +112,10 @@ export function pageHeader(lang: Lang, path: string): string {
 
 /** 内页通用页脚 + 结束标签 + 语言切换脚本 */
 export function pageFooter(lang: Lang): string {
-  const t = text[lang];
   return `</main>
 <footer class="site-footer">
   <div class="container">
-    <p>© ${new Date().getFullYear()} ${esc(site.name)} · ${esc(t.footer)}</p>
+    <p>© ${new Date().getFullYear()} ${esc(site.name)} | <a class="site-footer__links" href="${u(localize('/friends/', lang))}">${lang === 'zh' ? '友情链接' : 'Friends'}</a></p>
   </div>
 </footer>
 </div>

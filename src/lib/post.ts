@@ -34,9 +34,9 @@ export function postPage(opts: {
     toc.length > 3
       ? `<details class="toc glass">
       <summary>${esc(t.toc)}</summary>
-      <ol>${toc
+      <ul class="toc__list">${toc
         .map((h) => `<li class="depth-${h.depth}"><a href="#${esc(h.slug)}">${esc(h.text)}</a></li>`)
-        .join('')}</ol>
+        .join('')}</ul>
     </details>`
       : '';
 

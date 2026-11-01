@@ -401,10 +401,29 @@ body.inner .page {
   letter-spacing: 0.08em;
 }
 
-.toc ol {
+.toc__list {
   margin: 0.6rem 0 0;
-  padding-left: 1.2rem;
+  padding-left: 0;
+  list-style: none;
   color: var(--c-text-dim);
+}
+
+.toc__list li {
+  position: relative;
+  padding-left: 0.9rem;
+  line-height: 1.7;
+}
+
+.toc__list li::before {
+  content: '';
+  position: absolute;
+  left: 0.15rem;
+  top: 0.72em;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.5;
 }
 
 .toc li.depth-3 {
@@ -808,4 +827,16 @@ body.inner .page {
   .pager__item:hover {
     transform: none;
   }
+}
+
+/* details 折叠块内部 */
+.details__body {
+  margin-top: 0.8rem;
+}
+
+.details__body p {
+  margin: 0.4rem 0;
+  font-size: 0.86rem;
+  line-height: 1.75;
+  color: var(--c-text-dim);
 }

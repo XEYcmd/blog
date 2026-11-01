@@ -1,5 +1,5 @@
 import { esc } from './esc';
-import { localize, switchLangPath, text } from './data';
+import { localize, site, switchLangPath, text } from './data';
 import type { Lang } from './data';
 import { head } from './html';
 import { u } from './base';
@@ -133,7 +133,7 @@ export function homePage(opts: {
     </section>
 
     <footer class="home-footer">
-      <p>© ${new Date().getFullYear()} ${esc(t.footerName)} · ${esc(t.footer)}</p>
+      <p>© ${new Date().getFullYear()} ${esc(site.name)} | <a class="site-footer__links" href="${u(localize('/friends/', lang))}">${lang === 'zh' ? '友情链接' : 'Friends'}</a></p>
     </footer>
   </div>
 </section>

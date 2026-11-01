@@ -29,6 +29,13 @@ function inline(src: string): string {
     return `\u0000C${codes.length - 1}\u0000`;
   });
 
+  // 自动链接 <https://...> 和 <mailto:...>
+  s = s.replace(/&lt;(https?:\/\/[^\s&]+|mailto:[^\s&]+)&gt;/g, (_m, href: string) => {
+    const external = /^https?:\/\//i.test(href);
+    const label = href.replace(/^mailto:/i, '');
+    return `<a href="${href}"${external ? ' target="_blank" rel="noopener noreferrer"' : ''}>${label}</a>`;
+  });
+
   // 图片 ![alt](src "title")
   s = s.replace(/!\[([^\]]*)\]\((\S+?)(?:\s+&quot;([^&]*)&quot;)?\)/g, (_m, alt: string, src2: string, title?: string) => {
     const safe = /^(https?:\/\/|\/)/i.test(src2) ? src2 : '#';
@@ -63,16 +70,28 @@ export function renderMarkdown(source: string): { html: string; headings: Headin
   while (i < lines.length) {
     const line = lines[i];
 
-    // HTML 折叠块 <details>…</details>：原样保留（内部按 markdown 渲染）
+    // HTML 折叠块 <details>…</details>：外层标签与 summary 原样保留，其余按 markdown 递归渲染
     if (/^\s*<details[\s>]/i.test(line)) {
+      const openTag = line.trim();
       const buf: string[] = [];
+      let summary = '';
+      i++;
       while (i < lines.length) {
-        buf.push(lines[i]);
-        const isClose = /^\s*<\/details>\s*$/i.test(lines[i]);
+        if (/^\s*<\/details>\s*$/i.test(lines[i])) {
+          i++;
+          break;
+        }
+        const sum = lines[i].match(/^\s*<summary>(.*?)<\/summary>\s*$/i);
+        if (sum) {
+          summary = sum[1];
+        } else {
+          buf.push(lines[i]);
+        }
         i++;
-        if (isClose) break;
       }
-      out.push(buf.join('\n'));
+      const inner = renderMarkdown(buf.join('\n'));
+      const summaryHtml = summary ? `<summary>${inline(summary)}</summary>\n` : '';
+      out.push(`${openTag}\n${summaryHtml}<div class="details__body">${inner.html}</div>\n</details>`);
       continue;
     }
 
