@@ -85,6 +85,7 @@ export function pageHeader(lang: Lang, path: string): string {
     { href: localize('/', lang), label: t.nav.home, match: '/' },
     { href: localize('/posts/', lang), label: t.nav.posts, match: '/posts/' },
     { href: localize('/anime/', lang), label: t.navAnime, match: '/anime/' },
+    { href: localize('/friends/', lang), label: t.navFriends, match: '/friends/' },
     { href: localize('/about/', lang), label: t.nav.about, match: '/about/' },
   ];
   const other: Lang = lang === 'zh' ? 'en' : 'zh';

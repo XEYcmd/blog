@@ -117,6 +117,7 @@ export function homePage(opts: {
     <a href="${u(localize('/', lang))}" aria-current="page">${esc(t.nav.home)}</a>
     <a href="${u(localize('/posts/', lang))}">${esc(t.nav.posts)}</a>
     <a href="${u(localize('/anime/', lang))}">${esc(t.navAnime)}</a>
+    <a href="${u(localize('/friends/', lang))}">${esc(t.navFriends)}</a>
     <a href="${u(localize('/about/', lang))}">${esc(t.nav.about)}</a>
     <button class="lang-toggle" type="button" data-lang-switch="${other}" data-target="${esc(u(switchLangPath(path, other)))}" aria-label="${esc(t.langLabel)}">${esc(t.langShort)}</button>
   </nav>
