@@ -15,7 +15,7 @@ export const site = {
   url: SITE_URL,
   name: 'XEYcmd',
   github: 'https://github.com/XEYcmd',
-  repo: 'https://github.com/XEYcmd/xeycmd-blog-dsh',
+  repo: 'https://github.com/XEYcmd/blog',
   /** OG 分享图（相对站内路径） */
   ogImage: '/og.png',
 };
