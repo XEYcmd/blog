@@ -224,16 +224,26 @@ a:focus-visible {
   overflow: hidden;
 }
 
-.footer-quote::before {
-  content: '「';
+.footer-quote::before,
+.footer-quote::after {
   position: absolute;
-  left: 0.55rem;
-  top: 0.45rem;
   font-family: var(--font-display);
   font-size: 1.15rem;
   line-height: 1;
   color: var(--c-accent);
   opacity: 0.65;
+}
+
+.footer-quote::before {
+  content: '「';
+  left: 0.55rem;
+  top: 0.45rem;
+}
+
+.footer-quote::after {
+  content: '」';
+  right: 0.55rem;
+  bottom: 0.45rem;
 }
 
 .footer-quote blockquote {
@@ -258,6 +268,7 @@ a:focus-visible {
 
 .footer-quote__by {
   margin-top: 0.55rem;
+  padding-right: 1.2rem;
   font-family: var(--font-mono);
   font-size: 0.72rem;
   color: var(--c-text-dim);
