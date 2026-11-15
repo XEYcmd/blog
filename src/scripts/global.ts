@@ -121,8 +121,86 @@ function initCursorTrail() {
   });
 }
 
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initCursorTrail, { once: true });
-} else {
+type FooterQuote = {
+  main: string;
+  sub: string;
+  by: string;
+};
+
+/** 页脚名言：每次刷新随机换一条，并用打字机逐字显示 */
+function initFooterQuote() {
+  const root = document.querySelector<HTMLElement>('[data-footer-quote]');
+  const dataEl = document.querySelector<HTMLScriptElement>('[data-footer-quotes]');
+  if (!root || !dataEl) return;
+
+  let items: FooterQuote[] = [];
+  try {
+    const parsed: unknown = JSON.parse(dataEl.textContent || '[]');
+    if (Array.isArray(parsed)) items = parsed as FooterQuote[];
+  } catch {
+    return;
+  }
+  if (items.length === 0) return;
+
+  const mainEl = root.querySelector<HTMLElement>('[data-quote-main]');
+  const subEl = root.querySelector<HTMLElement>('[data-quote-sub]');
+  const byEl = root.querySelector<HTMLElement>('[data-quote-by]');
+  if (!mainEl || !byEl) return;
+
+  // 同一个标签页连续刷新时，尽量不重复上一条
+  let index = Math.floor(Math.random() * items.length);
+  try {
+    const last = sessionStorage.getItem('xey-quote');
+    if (items.length > 1 && String(index) === last) {
+      index = (index + 1 + Math.floor(Math.random() * (items.length - 1))) % items.length;
+    }
+    sessionStorage.setItem('xey-quote', String(index));
+  } catch {
+    /* 隐私模式下忽略 */
+  }
+
+  const quote = items[index];
+  if (subEl) subEl.textContent = quote.sub;
+  byEl.textContent = `—— ${quote.by}`;
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    mainEl.textContent = quote.main;
+    return;
+  }
+
+  root.classList.add('is-waiting', 'is-typing');
+  mainEl.textContent = '';
+
+  const text = quote.main;
+  let i = 0;
+
+  const type = () => {
+    i += 1;
+    mainEl.textContent = text.slice(0, i);
+    if (i >= text.length) {
+      window.setTimeout(() => root.classList.remove('is-typing', 'is-waiting'), 260);
+      return;
+    }
+    const ch = text.charAt(i - 1);
+    const pause =
+      ch === '。' || ch === '！' || ch === '？' || ch === '.' || ch === '!' || ch === '?'
+        ? 260
+        : ch === '、' || ch === '…' || ch === ',' || ch === ';' || ch === ':'
+          ? 130
+          : 38 + Math.random() * 34;
+    window.setTimeout(type, pause);
+  };
+
+  window.setTimeout(type, 420);
+}
+
+function boot() {
   initCursorTrail();
+  initFooterQuote();
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', boot, { once: true });
+} else {
+  boot();
 }

@@ -4,6 +4,7 @@ import type { Lang } from './data';
 import { head } from './html';
 import { u } from './base';
 import { musicPlayer, musicScript } from './player';
+import { footerQuote } from './quotes';
 import { friends } from '../data/friends';
 
 const ICONS: Record<string, string> = {
@@ -163,6 +164,7 @@ export function homePage(opts: {
     </div>
 
     <footer class="home-footer">
+      ${footerQuote(lang)}
       <p>© ${new Date().getFullYear()} ${esc(site.name)} | <a class="site-footer__links" href="${u(localize('/friends/', lang))}">${lang === 'zh' ? '友情链接' : 'Friends'}</a></p>
     </footer>
   </div>

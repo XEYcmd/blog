@@ -207,6 +207,111 @@ a:focus-visible {
   color: var(--c-text-dim);
 }
 
+/* ===== 页脚名言 ===== */
+.footer-quote {
+  position: relative;
+  max-width: 38rem;
+  margin: 0 auto 1.4rem;
+  padding: 1.05rem 1.3rem 1rem 1.6rem;
+  text-align: left;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 14px;
+  background:
+    linear-gradient(135deg, rgba(185, 164, 255, 0.12), rgba(255, 159, 210, 0.06) 55%, transparent),
+    rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  overflow: hidden;
+}
+
+.footer-quote::before {
+  content: '「';
+  position: absolute;
+  left: 0.55rem;
+  top: 0.45rem;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  line-height: 1;
+  color: var(--c-accent);
+  opacity: 0.65;
+}
+
+.footer-quote blockquote {
+  margin: 0;
+}
+
+.footer-quote__main {
+  margin: 0;
+  min-height: 1.75em;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  line-height: 1.75;
+  color: var(--c-text);
+}
+
+.footer-quote__sub {
+  margin: 0.3rem 0 0;
+  font-size: 0.82rem;
+  line-height: 1.7;
+  color: var(--c-text-dim);
+}
+
+.footer-quote__by {
+  margin-top: 0.55rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--c-text-dim);
+  opacity: 0.85;
+}
+
+.footer-quote__sub,
+.footer-quote__by {
+  transition: opacity 0.45s var(--ease-out), transform 0.45s var(--ease-out);
+}
+
+.footer-quote.is-waiting .footer-quote__sub,
+.footer-quote.is-waiting .footer-quote__by {
+  opacity: 0;
+  transform: translateY(4px);
+  transition: none;
+}
+
+.footer-quote.is-typing .footer-quote__main::after {
+  content: '';
+  display: inline-block;
+  width: 1px;
+  height: 1em;
+  margin-left: 3px;
+  vertical-align: -0.12em;
+  background: var(--c-accent);
+  animation: footer-quote-caret 0.9s step-end infinite;
+}
+
+@keyframes footer-quote-caret {
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .footer-quote {
+    padding: 0.9rem 1rem 0.85rem 1.4rem;
+    margin-bottom: 1.1rem;
+  }
+
+  .footer-quote__main {
+    font-size: 0.88rem;
+  }
+
+  .footer-quote__sub {
+    font-size: 0.78rem;
+  }
+
+  .footer-quote__by {
+    font-size: 0.68rem;
+  }
+}
+
 /* ===== 标签 / 日期 ===== */
 .tag {
   display: inline-block;

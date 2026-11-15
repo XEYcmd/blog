@@ -3,6 +3,7 @@ import { htmlLang, LANGS, localize, site, stripLang, switchLangPath, text } from
 import type { Lang } from './data';
 import { u, SITE_URL } from './base';
 import { globalScript } from './scripts';
+import { footerQuote } from './quotes';
 import { musicPlayer, musicScript } from './player';
 
 /** 逻辑路径 → 站点绝对 URL（含基路径） */
@@ -116,6 +117,7 @@ export function pageFooter(lang: Lang): string {
   return `</main>
 <footer class="site-footer">
   <div class="container">
+    ${footerQuote(lang)}
     <p>© ${new Date().getFullYear()} ${esc(site.name)} | <a class="site-footer__links" href="${u(localize('/friends/', lang))}">${lang === 'zh' ? '友情链接' : 'Friends'}</a></p>
   </div>
 </footer>
